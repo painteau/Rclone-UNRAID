@@ -2,11 +2,13 @@
 
 echo "$(date "+%d.%m.%Y %T") INFO: starting script"
 
-#Variables definitions
+# Variables definitions
 
-RcloneRemoteName="drive" # Name of rclone remote mount WITHOUT ':'. NOTE: Choose your encrypted remote for sensitive data
-RcloneMountLocation="/mnt/user/cloud" # absolute path of rclone  mount WITHOUT '/' at the end.
+RcloneRemoteName="GdriveMedia" # Name of rclone remote mount WITHOUT ':'. NOTE: Choose your encrypted remote for sensitive data
+RcloneMountLocation="/mnt/user/mount_rclone" # absolute path of rclone  mount WITHOUT '/' at the end.
 RcloneMountDirCacheTime="10m" # rclone dir cache time
+RcloneMountCacheDirectory="/mnt/user/mount_rclone/vfs_cache"
+
 
 echo "$(date "+%d.%m.%Y %T") INFO: Script will now mount ${RcloneRemoteName} in ${RcloneMountLocation} with ${RcloneMountDirCacheTime} cache time..."
 sleep 3
@@ -27,7 +29,7 @@ if [[ -f "$RcloneMountLocation/$RcloneRemoteName/mountcheck" ]]; then
 		fusermount -uz $RcloneMountLocation/$RcloneRemoteName
 		sleep 1
 		echo "$(date "+%d.%m.%Y %T") INFO: mounting ${RcloneRemoteName}..."
-		rclone mount --allow-non-empty --allow-other --buffer-size 256M --cache-tmp-wait-time 5m --dir-cache-time $RcloneMountDirCacheTime --drive-chunk-size 32M --fast-list --log-level INFO --log-file /mnt/user/appdata/rclone.log --poll-interval 5m --size-only --timeout 1h --tpslimit 10 --umask 002 --vfs-read-chunk-size 128M --vfs-read-chunk-size-limit off $RcloneRemoteName: $RcloneMountLocation/$RcloneRemoteName
+		rclone mount --allow-non-empty --allow-other --buffer-size 256M --cache-tmp-wait-time 5m --dir-cache-time $RcloneMountDirCacheTime --cache-dir $RcloneMountCacheDirectory --drive-chunk-size 32M --fast-list --log-level INFO --log-file /mnt/user/appdata/rclone.log --poll-interval 5m --size-only --timeout 1h --tpslimit 10 --umask 002 --vfs-read-chunk-size 128M --vfs-read-chunk-size-limit off $RcloneRemoteName: $RcloneMountLocation/$RcloneRemoteName
 		sleep 5
 		echo "$(date "+%d.%m.%Y %T") INFO: Checking mount of ${RcloneRemoteName}..."
 		sleep 2
@@ -39,3 +41,4 @@ if [[ -f "$RcloneMountLocation/$RcloneRemoteName/mountcheck" ]]; then
 fi
 
 echo "$(date "+%d.%m.%Y %T") INFO: Script complete"
+
